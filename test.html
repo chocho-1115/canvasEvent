@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv=content-type content="text/html; charset=utf-8">
+<meta name=HandheldFriendly content=true />
+<style type="text/css">
+*{margin:0;padding:0;}
+body{background:#000;}
+canvas{position:absolute;left:100px;top:100px;border:20px solid #999;background:#222;}
+</style>
+<script type="text/javascript" src="canvasEvent.js"></script>
+</head>
+<body>
+<canvas id="canvas" width=800 height=600></canvas>
+
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>3<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>3<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>3<br/>
+
+<script type="text/javascript">
+(function(){
+	
+	var ctx = canvas.getContext('2d');
+	
+	ctx.fillStyle = 'rgba(255,255,255,.5)';
+	ctx.rect(50, 50, 100,100);
+	ctx.fill()
+	
+	//////
+	var ces = new CE.Stage(canvas,['mousedown','mouseup','click']);
+	var area = new CE.Area(ces,'rect',{x:50,y:50,width:100,height:100});
+	
+	area.addEvent('mousedown',function(e){
+		console.log(9)
+	})
+	
+	area.addEvent('mouseup',function(e){
+		console.log(6)
+	})
+	area.addEvent('click',function(e){
+		console.log(1)
+	})
+	
+	
+}());
+</script>
+</body>
+</html>
