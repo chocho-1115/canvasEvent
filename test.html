@@ -25,56 +25,80 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	
 	var ctx = canvas.getContext('2d');
 	
+	ctx.beginPath();
 	ctx.fillStyle = 'rgba(255,255,255,.5)';
-	ctx.rect(50, 50, 300,300);
+	ctx.rect(50, 50, 100,100);
 	ctx.fill()
 	
 	//////
 	var ces = new CE.Stage(canvas,['out','over','move','down','up','click']);
-	var area = new CE.Area(ces,'rect',{x:50,y:50,width:300,height:300});
 	
-	area.addEvent('down',function(e){
+	var A1 = new CE.Area(ces,'rect',{x:50,y:50,width:100,height:100});
+	
+	A1.addEvent('down',function(e){
+		console.log(this)
 		text.innerHTML += ' | down';
 	})
-	area.addEvent('up',function(e){
+	A1.addEvent('up',function(e){
 		text.innerHTML += ' | up';
 	})
-	area.addEvent('click',function(e){
+	A1.addEvent('click',function(e){
 		text.innerHTML += ' | click';
 	})
 	
 	
-	area.addEvent('over',function(e){
+	A1.addEvent('over',function(e){
 		text.innerHTML += ' | over';
 	})
-	area.addEvent('out',function(e){
+	A1.addEvent('out',function(e){
 		text.innerHTML += ' | out';
 	})
-	area.addEvent('move',function(e){
+	A1.addEvent('move',function(e){
 		text.innerHTML += ' | move';
 	})
 	
+	//扇形
+	CanvasRenderingContext2D.prototype.sector = function (x, y, radius, sDeg, eDeg) {
+		this.save();
+		this.translate(x, y);
+		this.beginPath();
+		this.arc(0,0,radius,sDeg, eDeg);
+		this.save();
+		this.rotate(eDeg);
+		this.moveTo(radius,0);
+		this.lineTo(0,0);
+		this.restore();
+		this.rotate(sDeg);
+		this.lineTo(radius,0);
+		this.closePath();
+		this.restore();
+		return this;
+	}
 	
+	ctx.beginPath();
+	ctx.sector(300,300,100,0, -Math.PI/180*90);
+	ctx.fill();
 	
-	console.log(ces)
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//ces.disabled('click');
-	
-	//area.removeEvent('click');
-	
-	area.addEvent('touchstart',function(e){
-		text.innerHTML += ' | touchstart';
+	var A2 = new CE.Area(ces,'arc',{x:300,y:300,radius:100,startAngle:0,endAngle:-90});
+	A2.addEvent('over',function(e){
+		text.innerHTML += ' |over';
 	})
+	A2.addEvent('out',function(e){
+		text.innerHTML += ' |out';
+	})
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 	
 }());
 </script>
