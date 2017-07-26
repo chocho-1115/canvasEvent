@@ -150,17 +150,15 @@
 		},
 		
 		addChild: function(child){
-			this.areas.push(child)
-			this.childLength = this.areas.length;
-		},
-		removeChild:function(child){
-			
-			for(var i = child.index;i<this.areas.length;i++){
-				this.areas[i].index--;
+			var len = arguments.length;
+			for(var i=0;i<len;i++){
+				this.areas.push(arguments[i])
+				this.childLength = this.areas.length;
 			}
-			
+		},
+		
+		removeChild:function(child){
 			this.areas.splice(child.index,1);
-			
 		},
 		
 		getEventOffset:function(e){
@@ -193,14 +191,13 @@
 	}
 	
 	//新建一个区域
-	CE.Area = function(s,type,option){
-		this.stage = s;
-		this.index = s.areas.length;
+	CE.Area = function(type,option){
+		
 		this.type = type||'';
 		this.x = option.x;
 		this.y = option.y;
 		this.status = -1;
-		s.addChild(this);
+		//s.addChild(this);
 		
 		if(this.type=='rect'){
 			this.width = option.width;
