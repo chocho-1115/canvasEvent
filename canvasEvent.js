@@ -211,6 +211,8 @@
 			this.radius = option.radius;
 			this.startAngle = option.startAngle+(Math.floor(Math.abs(option.startAngle)/360))*360*startD;
 			this.endAngle = option.endAngle+(Math.ceil(Math.abs(option.endAngle)/360))*360*endD;
+		}else if(this.type=='polygon'){
+			this.points = option.points;
 		}
 	}
 
@@ -255,6 +257,24 @@
 					}else{
 						return false
 					}
+				case 'polygon':
+					var B = false,
+						points = this.points,
+						len = points.length;
+						
+					for (var i = 0, j = len - 1; i < len; j = i++) {
+						var xi = points[i].x, yi = points[i].y;
+						var xj = points[j].x, yj = points[j].y;
+						
+						var intersect = ((yi > pageY) != (yj > pageY))
+							&& (pageX < (xj - xi) * (pageY - yi) / (yj - yi) + xi);
+						if (intersect){
+							B = !B;
+						}
+					}
+					return B; 
+				
+				
 			}
 			
 		}
@@ -264,11 +284,7 @@
 	}
 	
 	
-	
-	
-	
-	
-	
+ 
 	
 	
 
