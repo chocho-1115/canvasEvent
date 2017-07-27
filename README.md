@@ -1,10 +1,11 @@
----
-title: canvasEvent介绍
----
+
+## canvasEvent介绍
+
 
 [github canvasEvent.js](https://github.com/chocho-1115/canvasEvent/)
 
 一个给canvas内部添加事件相应区域的js库。支持鼠标响应与触屏响应，简单易用，无需重绘画布元素。
+ ** 原理 ** ：在canvas注册相应的事件，并给canvas内部添加几何响应区域。当交互发时，判断事件是否发生在几何响应区域。如果交互发生在几何响应区域时，响应该区域注册的事件。
 
 ### 初始化事件
 ``` javascript
@@ -20,13 +21,41 @@ ces.enabled('down','up','click')
 禁用事件 用disabled，用法和enabled类似。
 
 ### 添加响应区域
-事件响应区域支持‘rect’，‘arc’，‘polygon’三种类型：
+事件响应区域支持三种类型：
+
+第一种**rect类型**-矩形事件响应区域
+``` javascript
+var ces = new CE.Stage(canvas,['out','over','move','down','up','click']);
+
+var rect = new CE.shape.Rect(150,150,100,100)
+var A1 = new CE.Area(rect);
+
+ces.addChild(A1)
+
+```
+
+第二种**arc类型**-扇形事件响应区域
+
 
 ``` javascript
 var ces = new CE.Stage(canvas,['out','over','move','down','up','click']);
-var A1 = new CE.Area('rect',{x:50,y:50,width:100,height:100});
-var A2 = new CE.Area('arc',{x:300,y:300,radius:100,startAngle:0,endAngle:-90});
-var A3 = new CE.Area('polygon',{points:[
+
+var arc = new CE.shape.Arc('arc',{x:300,y:300,radius:100,startAngle:0,endAngle:-90});
+var A1 = new CE.Area();
+A1.shape = arc;
+
+ces.addChild(A1);
+
+
+```
+
+第二种**polygon类型**-任意形状事件响应区域
+
+
+``` javascript
+var ces = new CE.Stage(canvas,['out','over','move','down','up','click']);
+
+var polygon = new CE.shape.Polygon('polygon',{points:[
 		{x:400,y:50},
 		{x:400,y:150},
 		{x:500,y:150},
@@ -41,38 +70,44 @@ var A3 = new CE.Area('polygon',{points:[
 		
 		{x:500,y:50}
 	]});
-ces.addChild(A1,A2,A3);
+var A1 = new CE.Area(polygon);
+
+
+ces.addChild(A1);
 ```
 
 ### 添加事件
 
-给事件响应区域添加的事件必须是ces对象初始话的事件。没有初始化的事件，添加后是没响应的。
+给事件响应区域添加的事件必须是初始话了的事件。没有初始化的事件，添加后是没响应的。
 
 ``` javascript
-var ces = new CE.Stage(canvas,['out','over','move','down','up','click']);
-var A1 = new CE.Area('rect',{x:50,y:50,width:100,height:100});
-	ces.addChild(A1)
-	A1.addEvent('down',function(e){
-		console.log(this)//这里的this指向的是A1
-		text.innerHTML += ' | down';
-	})
-	A1.addEvent('up',function(e){
-		text.innerHTML += ' | up';
-	})
-	A1.addEvent('click',function(e){
-		text.innerHTML += ' | click';
-	})
+var ces = new CE.Stage(canvas,['out','over','move']);
+ces.enabled('down','up','click')
+
+var A1 = new CE.Area(new CE.shape.Rect(150,150,100,100));
+ces.addChild(A1)
+A1.addEvent('down',function(e){
+	console.log(this);//这里的this指向了A1
+	text.innerHTML += ' | down';
+})
+A1.addEvent('up',function(e){
+	text.innerHTML += ' | up';
+})
+A1.addEvent('click',function(e){
+	text.innerHTML += ' | click';
+})
+
+
+A1.addEvent('over',function(e){
+	text.innerHTML += ' | over';
+})
+A1.addEvent('out',function(e){
+	text.innerHTML += ' | out';
+})
+A1.addEvent('move',function(e){
+	text.innerHTML += ' | move';
+})
 	
-	
-	A1.addEvent('over',function(e){
-		text.innerHTML += ' | over';
-	})
-	A1.addEvent('out',function(e){
-		text.innerHTML += ' | out';
-	})
-	A1.addEvent('move',function(e){
-		text.innerHTML += ' | move';
-	})
 ```
 
 

@@ -1,7 +1,9 @@
-
+// canvasEvent.js Javascript Library by hylink 杨燚平 2017-07-27 email:849890769@qq.com
+//https://github.com/chocho-1115
 (function(window){
 	
 	window.canvasEvent = window.CE = {};
+	
 	CE.Stage = function(canvas,regEvent){
 		
 		var self = this;
@@ -75,6 +77,7 @@
 						var offset = self.getEventOffset(e);
 						for(var i=0;i<self.childLength;i++){
 							var thisAreas = self.areas[i];
+							//console.log(thisAreas.isInArea(offset.x,offset.y))
 							var isIn = thisAreas.isInArea(offset.x,offset.y);
 							if(isIn){
 								if(thisAreas.status==-1){
@@ -121,12 +124,8 @@
 							}
 						}
 					}
-					
-
 				}
 			}
-			
-			
 		},
 		//禁用
 		disabled:function(){
@@ -149,18 +148,34 @@
 			}
 		},
 		
-		addChild: function(child){
+		addChild: function(){
 			var len = arguments.length;
 			for(var i=0;i<len;i++){
 				this.areas.push(arguments[i])
-				this.childLength = this.areas.length;
 			}
+			this.childLength = this.areas.length;
 		},
 		
-		removeChild:function(child){
-			this.areas.splice(child.index,1);
+		removeChild:function(){
+			var areas = this.areas,
+				len = arguments.length;
+				
+			for(var i=0;i<len;i++){
+				var index = this.getChildIndex(arguments[i]);
+				if(index!=-1)this.areas.splice(index,1);
+			}
+			this.childLength = this.areas.length;
 		},
-		
+		getChildIndex : function(child){
+			var areas = this.areas,
+				len = areas.length;
+			for (var i = 0; i < len; i++) {
+				if (child === areas[i]) {
+					return i;
+				}
+			}
+			return -1;	
+		},
 		getEventOffset:function(e){
 			var offset = {x:0,y:0},
 				self = this;
@@ -173,13 +188,10 @@
 					offset.x = e.changedTouches[0].clientX - canPosition.left - self.borderLeftWidth;
 					offset.y = e.changedTouches[0].clientY - canPosition.top - self.borderTopWidth;
 				}
-				//text.innerHTML += 10 + '|';
 			}else{
 				offset.x = e.offsetX||event.layerX;
 				offset.y = e.offsetY||event.layerY;
 			}
-			
-				
 			return offset
 		},
 		
@@ -191,26 +203,9 @@
 	}
 	
 	//新建一个区域
-	CE.Area = function(type,option){
-		
-		this.type = type||'';
-		this.x = option.x;
-		this.y = option.y;
+	CE.Area = function(shape){
 		this.status = -1;
-		//s.addChild(this);
-		
-		if(this.type=='rect'){
-			this.width = option.width;
-			this.height = option.height;
-		}else if(this.type=='arc'){
-			var startD = option.startAngle<0?1:-1;
-			var endD = option.endAngle<0?1:-1;
-			this.radius = option.radius;
-			this.startAngle = option.startAngle+(Math.floor(Math.abs(option.startAngle)/360))*360*startD;
-			this.endAngle = option.endAngle+(Math.ceil(Math.abs(option.endAngle)/360))*360*endD;
-		}else if(this.type=='polygon'){
-			this.points = option.points;
-		}
+		this.shape = shape||null;
 	}
 
 	CE.Area.prototype = {
@@ -221,67 +216,92 @@
 		removeEvent:function(type){
 			this['on'+type] = null;
 		},
-		isInArea:function(pageX,pageY){
-			
-			var x = this.x;
-			var y = this.y;
-
-			switch(this.type){
-				case 'rect':
-					if(pageX>=x && pageX<= (x+this.width) && pageY >= y && pageY<=(y+this.height)){
-						return true;
-					}else{
-						return false;
-					}
-				case 'arc':
-					var dx = this.x - pageX;
-					var dy = this.y - pageY;
-					if(dx * dx + dy * dy > this.radius * this.radius)return false;
-					var thisA = 180/Math.PI*Math.atan(dy/dx);
-
-					if(pageX>=this.x&&pageY<=this.y){//第一象限
-						thisA = 360+thisA
-					}else if(pageX<=this.x&&pageY<=this.y){//第二象限
-						thisA = 180+thisA
-					}else if(pageX<=this.x&&pageY>=this.y){//第三象限
-						thisA = 180+thisA
-					}else if(pageX>=this.x&&pageY>=this.y){//第四象限
-						thisA = thisA
-					}
-					
-					if(thisA>=this.startAngle&&thisA<=this.endAngle){
-						return true
-					}else{
-						return false
-					}
-				case 'polygon':
-					var B = false,
-						points = this.points,
-						len = points.length;
-						
-					for (var i = 0, j = len - 1; i < len; j = i++) {
-						var xi = points[i].x, yi = points[i].y;
-						var xj = points[j].x, yj = points[j].y;
-						
-						var intersect = ((yi > pageY) != (yj > pageY))
-							&& (pageX < (xj - xi) * (pageY - yi) / (yj - yi) + xi);
-						if (intersect){
-							B = !B;
-						}
-					}
-					return B; 
-				
-				
-			}
-			
+		isInArea : function (pageX,pageY){
+			return this.shape.isInside(pageX,pageY);
 		}
-		
-		
-		
 	}
 	
+	//////////////
+	CE.shape = {};
+	CE.shape.Rect = function(x,y,width,height){
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	}
+ 	CE.shape.Rect.prototype = {
+		constructor: CE.shape.Rect,
+		isInside:function(pageX,pageY){
+			if(pageX>=this.x && pageX<= (this.x+this.width) && pageY >= this.y && pageY<=(this.y+this.height)){
+				return true;
+			}else{
+				return false;
+			}
+		}
+	}
+	CE.shape.Arc = function(x,y,radius,startAngle,endAngle){
+		
+		var startD = startAngle<0?1:-1;
+		var endD = endAngle<0?1:-1;
+		
+		this.x = x;
+		this.y = y;
+		this.radius = radius;
+		this.startAngle = startAngle+(Math.floor(Math.abs(startAngle)/360))*360*startD;
+		this.endAngle = endAngle+(Math.ceil(Math.abs(endAngle)/360))*360*endD;
+		
+	}
+ 	CE.shape.Arc.prototype = {
+		constructor: CE.shape.Arc,
+		isInside:function(pageX,pageY){
+			var dx = this.x - pageX;
+			var dy = this.y - pageY;
+			if(dx * dx + dy * dy > this.radius * this.radius)return false;
+			var thisA = 180/Math.PI*Math.atan(dy/dx);
+
+			if(pageX>=this.x&&pageY<=this.y){//第一象限
+				thisA = 360+thisA
+			}else if(pageX<=this.x&&pageY<=this.y){//第二象限
+				thisA = 180+thisA
+			}else if(pageX<=this.x&&pageY>=this.y){//第三象限
+				thisA = 180+thisA
+			}else if(pageX>=this.x&&pageY>=this.y){//第四象限
+				thisA = thisA
+			}
+			
+			if(thisA>=this.startAngle&&thisA<=this.endAngle){
+				return true
+			}else{
+				return false
+			}
+		}
+	}
 	
- 
+	CE.shape.Polygon = function(points){
+		this.points = points;
+	}
+ 	CE.shape.Polygon.prototype = {
+		constructor: CE.shape.Polygon,
+		isInside:function(pageX,pageY){
+			var B = false,
+				points = this.points,
+				len = points.length;
+				
+			for (var i = 0, j = len - 1; i < len; j = i++) {
+				var xi = points[i].x, yi = points[i].y;
+				var xj = points[j].x, yj = points[j].y;
+				
+				var intersect = ((yi > pageY) != (yj > pageY))
+					&& (pageX < (xj - xi) * (pageY - yi) / (yj - yi) + xi);
+					//console.log(pageX,pageY)
+				if (intersect){
+					B = !B;
+				}
+			}
+			return B; 
+		}
+	}
+		
 	
 	
 

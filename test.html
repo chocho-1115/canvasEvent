@@ -26,17 +26,16 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	var ctx = canvas.getContext('2d');
 	
 	ctx.beginPath();
-	ctx.fillStyle = 'rgba(255,255,255,.5)';
-	ctx.rect(50, 50, 100,100);
+	ctx.fillStyle = 'rgba(125,125,125,1)';
+	ctx.rect(150, 150, 100,100);
 	ctx.fill()
 	
 	///////////////////////
 	var ces = new CE.Stage(canvas,['out','over','move']);
-	
 	ces.enabled('down','up','click')
 	
-	var A1 = new CE.Area('rect',{x:50,y:50,width:100,height:100});
-	//ces.addChild(A1)
+	var A1 = new CE.Area(new CE.shape.Rect(150,150,100,100));
+	ces.addChild(A1)
 	A1.addEvent('down',function(e){
 		console.log(this)
 		text.innerHTML += ' | down';
@@ -59,7 +58,10 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 		text.innerHTML += ' | move';
 	})
 	
+	
+	//return false
 	/////////////////////////扇形
+	ctx.fillStyle = 'rgba(125,100,100,0.5)';
 	CanvasRenderingContext2D.prototype.sector = function (x, y, radius, sDeg, eDeg) {
 		this.save();
 		this.translate(x, y);
@@ -81,8 +83,9 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	ctx.sector(300,300,100,0, -Math.PI/180*90);
 	ctx.fill();
 	
-	var A2 = new CE.Area('arc',{x:300,y:300,radius:100,startAngle:0,endAngle:-90});
-	ces.addChild(A1,A2)
+	var A2 = new CE.Area(new CE.shape.Arc(300,300,100,0,-90));
+	ces.addChild(A2)
+	//ces.removeChild(A1)
 	A2.addEvent('over',function(e){
 		text.innerHTML += ' |over';
 	})
@@ -93,6 +96,7 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	
 	
 	///////////////////////
+	ctx.fillStyle = 'rgba(125,125,125,1)';
 	ctx.beginPath();
 	ctx.moveTo(400,50);
 	ctx.lineTo(400,150);
@@ -110,8 +114,7 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	ctx.closePath();
 	ctx.fill();
 	
-	
-	var A3 = new CE.Area('polygon',{points:[
+	var Polygon = new CE.shape.Polygon([
 		{x:400,y:50},
 		{x:400,y:150},
 		{x:500,y:150},
@@ -125,7 +128,9 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 		{x:500,y:90},
 		
 		{x:500,y:50}
-	]});
+	])
+	var A3 = new CE.Area();
+	A3.shape = Polygon;
 	ces.addChild(A3)
 	
 	A3.addEvent('over',function(e){
@@ -134,7 +139,6 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	A3.addEvent('out',function(e){
 		text.innerHTML += ' |out';
 	})
-	
 	
 	
 
