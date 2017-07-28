@@ -74,34 +74,51 @@
 				//添加over out move 事件
 				if(self.regEvent[inEvent].name == self.deviceType + 'move'){
 					self.canvas['on'+self.regEvent[inEvent].name] = function(e){
-						var offset = self.getEventOffset(e);
-						for(var i=0;i<self.childLength;i++){
+						var offset = self.getEventOffset(e),
+							overPenetrate = true,
+							movePenetrate = true,
+							outPenetrate = true;
+						
+						for(var i=self.childLength-1;i>=0;i--){
 							var thisAreas = self.areas[i];
-							//console.log(thisAreas.isInArea(offset.x,offset.y))
+							
 							var isIn = thisAreas.isInArea(offset.x,offset.y);
 							if(isIn){
-								if(thisAreas.status==-1){
+								if(thisAreas.status==-1&&overPenetrate){
 									inEvent = 'over';
 									thisAreas.status = 1;
 									e.type = self.deviceType+'over';
 									if(self.regEvent[inEvent].status){
 										self.occur(thisAreas['onover'],e,thisAreas)
 									}
-								}else{
+								}else if(movePenetrate){
 									inEvent = 'move';
 									if(self.regEvent[inEvent].status){
 										self.occur(thisAreas['onmove'],e,thisAreas)
 									}
 								}
+								
+								if(!thisAreas['movePenetrate']){
+									movePenetrate = false;
+								}
+								if(!thisAreas['overPenetrate']){
+									overPenetrate = false;
+								}
+								if(outPenetrate&&!thisAreas['outPenetrate']){
+									outPenetrate = false;
+								}
+								
 							}else{
-								if(thisAreas.status==1){
+								if(thisAreas.status==1&&outPenetrate){
 									inEvent = 'out';
 									thisAreas.status = -1;
 									e.type = self.deviceType+'out';
 									if(self.regEvent[inEvent].status){
+										outPenetrate = false;
 										self.occur(thisAreas['onout'],e,thisAreas)
 									}
 								}
+								
 							}
 						}
 					}
@@ -111,16 +128,19 @@
 						//获取当前鼠标在画布上的坐标
 						var offset = self.getEventOffset(e);
 						//遍历所有事件区域
-						for(var i=0;i<self.childLength;i++){
+						for(var i=self.childLength-1;i>=0;i--){
 							var thisAreas = self.areas[i];
 							//鼠标是否在形状内
 							var isIn = thisAreas.isInArea(offset.x,offset.y);
 							if(isIn){
+								
+								
 								var type = e.type.replace(/mouse|touch/g, "");
 								//画布是否有注册当前事件
 								if(self.regEvent[inEvent].status){
 									self.occur(thisAreas['on'+inEvent],e,thisAreas)
 								}
+								if(!thisAreas[inEvent+'Penetrate'])return false
 							}
 						}
 					}
@@ -210,6 +230,7 @@
 
 	CE.Area.prototype = {
 		constructor: CE.Area,
+		//添加事件 事件类型 事件函数 是否穿透
 		addEvent:function(type, func){
 			this['on'+type] = func;
 		},
@@ -218,6 +239,10 @@
 		},
 		isInArea : function (pageX,pageY){
 			return this.shape.isInside(pageX,pageY);
+		},
+		//是否穿透触发底层的事件
+		setPenetrate : function(type,bool){
+			this[type+'Penetrate'] = bool||false;
 		}
 	}
 	

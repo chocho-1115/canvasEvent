@@ -96,51 +96,55 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	
 	
 	///////////////////////
-	ctx.fillStyle = 'rgba(125,125,125,1)';
+	//ctx.fillStyle = 'rgba(125,125,125,1)';
 	ctx.beginPath();
-	ctx.moveTo(400,50);
-	ctx.lineTo(400,150);
-	ctx.lineTo(500,150);
+	ctx.moveTo(200,100);
+	ctx.lineTo(200,200);
+	ctx.lineTo(500,200);
 	
-	ctx.lineTo(500,110);
-	ctx.lineTo(480,140);
+	ctx.lineTo(500,160);
+	ctx.lineTo(480,190);
 	
-	ctx.lineTo(450,100);
+	ctx.lineTo(450,150);
 	
-	ctx.lineTo(480,60);
-	ctx.lineTo(500,90);
+	ctx.lineTo(480,110);
+	ctx.lineTo(500,140);
 	
-	ctx.lineTo(500,50);
+	ctx.lineTo(500,100);
 	ctx.closePath();
 	ctx.fill();
 	
 	var Polygon = new CE.shape.Polygon([
-		{x:400,y:50},
-		{x:400,y:150},
-		{x:500,y:150},
+		{x:200,y:100},
+		{x:200,y:200},
+		{x:500,y:200},
 		
-		{x:500,y:110},
-		{x:480,y:140},
+		{x:500,y:160},
+		{x:480,y:190},
 		
-		{x:450,y:100},
+		{x:450,y:150},
 		
-		{x:480,y:60},
-		{x:500,y:90},
+		{x:480,y:110},
+		{x:500,y:140},
 		
-		{x:500,y:50}
+		{x:500,y:100}
 	])
 	var A3 = new CE.Area();
 	A3.shape = Polygon;
 	ces.addChild(A3)
 	
-	A3.addEvent('over',function(e){
-		text.innerHTML += ' |over';
-	})
+	
 	A3.addEvent('out',function(e){
 		text.innerHTML += ' |out';
 	})
+	A3.addEvent('over',function(e){
+		text.innerHTML += ' |over';
+	})
 	
 	
+	//A3.setPenetrate('out',true)
+	//A3.setPenetrate('over',true)
+	//ces.removeChild(A1)
 
 	
 }());
