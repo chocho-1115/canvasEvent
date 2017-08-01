@@ -209,8 +209,8 @@
 					offset.y = e.changedTouches[0].clientY - canPosition.top - self.borderTopWidth;
 				}
 			}else{
-				offset.x = e.offsetX||event.layerX;
-				offset.y = e.offsetY||event.layerY;
+				offset.x = e.offsetX||e.layerX;
+				offset.y = e.offsetY||e.layerY;
 			}
 			return offset
 		},
@@ -248,29 +248,38 @@
 	
 	//////////////
 	CE.shape = {};
-	CE.shape.Rect = function(x,y,width,height){
-		this.x = x;
-		this.y = y;
+	CE.shape.Rect = function(width,height,opt){
+		
 		this.width = width;
 		this.height = height;
+		
+		this.x = opt.x||0;
+		this.y = opt.y||0;
+		this.regX = opt.regX||0;
+		this.regY = opt.regY||0;
+		
 	}
  	CE.shape.Rect.prototype = {
 		constructor: CE.shape.Rect,
 		isInside:function(pageX,pageY){
-			if(pageX>=this.x && pageX<= (this.x+this.width) && pageY >= this.y && pageY<=(this.y+this.height)){
+			var x = this.x - this.regX,
+				y = this.y - this.regY;
+			if(pageX>=x && pageX<= (x+this.width) && pageY >= y && pageY<=(y+this.height)){
 				return true;
 			}else{
 				return false;
 			}
 		}
 	}
-	CE.shape.Arc = function(x,y,radius,startAngle,endAngle){
+	CE.shape.Arc = function(radius,startAngle,endAngle,opt){
 		
-		var startD = startAngle<0?1:-1;
+		var startD = this.startAngle<0?1:-1;
 		var endD = endAngle<0?1:-1;
 		
-		this.x = x;
-		this.y = y;
+		this.x = opt.x||0;
+		this.y = opt.y||0;
+		this.regX = opt.regX||0;
+		this.regY = opt.regY||0;
 		this.radius = radius;
 		this.startAngle = startAngle+(Math.floor(Math.abs(startAngle)/360))*360*startD;
 		this.endAngle = endAngle+(Math.ceil(Math.abs(endAngle)/360))*360*endD;
@@ -279,18 +288,21 @@
  	CE.shape.Arc.prototype = {
 		constructor: CE.shape.Arc,
 		isInside:function(pageX,pageY){
-			var dx = this.x - pageX;
-			var dy = this.y - pageY;
+			
+			var x = this.x - this.regX,
+				y = this.y - this.regY,
+				dx = x - pageX,
+				dy = y - pageY;
 			if(dx * dx + dy * dy > this.radius * this.radius)return false;
 			var thisA = 180/Math.PI*Math.atan(dy/dx);
 
-			if(pageX>=this.x&&pageY<=this.y){//第一象限
+			if(pageX>=x&&pageY<=y){//第一象限
 				thisA = 360+thisA
-			}else if(pageX<=this.x&&pageY<=this.y){//第二象限
+			}else if(pageX<=x&&pageY<=y){//第二象限
 				thisA = 180+thisA
-			}else if(pageX<=this.x&&pageY>=this.y){//第三象限
+			}else if(pageX<=x&&pageY>=y){//第三象限
 				thisA = 180+thisA
-			}else if(pageX>=this.x&&pageY>=this.y){//第四象限
+			}else if(pageX>=x&&pageY>=y){//第四象限
 				thisA = thisA
 			}
 			
@@ -302,8 +314,12 @@
 		}
 	}
 	
-	CE.shape.Polygon = function(points){
+	CE.shape.Polygon = function(points,opt){
 		this.points = points;
+		this.x = opt.x||0;
+		this.y = opt.y||0;
+		this.regX = opt.regX||0;
+		this.regY = opt.regY||0;
 	}
  	CE.shape.Polygon.prototype = {
 		constructor: CE.shape.Polygon,
@@ -313,8 +329,8 @@
 				len = points.length;
 				
 			for (var i = 0, j = len - 1; i < len; j = i++) {
-				var xi = points[i].x, yi = points[i].y;
-				var xj = points[j].x, yj = points[j].y;
+				var xi = points[i].x+this.x-this.regX, yi = points[i].y+this.y-this.regY;
+				var xj = points[j].x+this.x-this.regX, yj = points[j].y+this.y-this.regY;
 				
 				var intersect = ((yi > pageY) != (yj > pageY))
 					&& (pageX < (xj - xi) * (pageY - yi) / (yj - yi) + xi);

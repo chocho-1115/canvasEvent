@@ -34,7 +34,7 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	var ces = new CE.Stage(canvas,['out','over','move']);
 	ces.enabled('down','up','click')
 	
-	var A1 = new CE.Area(new CE.shape.Rect(150,150,100,100));
+	var A1 = new CE.Area(new CE.shape.Rect(100,100,{x:250,y:250,regX:100,regY:100}));
 	ces.addChild(A1)
 	A1.addEvent('down',function(e){
 		console.log(this)
@@ -83,7 +83,7 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	ctx.sector(300,300,100,0, -Math.PI/180*90);
 	ctx.fill();
 	
-	var A2 = new CE.Area(new CE.shape.Arc(300,300,100,0,-90));
+	var A2 = new CE.Area(new CE.shape.Arc(100,0,-90,{x:400,y:400,regX:100,regY:100}));
 	ces.addChild(A2)
 	//ces.removeChild(A1)
 	A2.addEvent('over',function(e){
@@ -115,20 +115,20 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	ctx.fill();
 	
 	var Polygon = new CE.shape.Polygon([
-		{x:200,y:100},
-		{x:200,y:200},
-		{x:500,y:200},
+		{x:100,y:0},
+		{x:100,y:100},
+		{x:400,y:100},
 		
-		{x:500,y:160},
-		{x:480,y:190},
+		{x:400,y:60},
+		{x:380,y:90},
 		
-		{x:450,y:150},
+		{x:350,y:50},
 		
-		{x:480,y:110},
-		{x:500,y:140},
+		{x:380,y:10},
+		{x:400,y:40},
 		
-		{x:500,y:100}
-	])
+		{x:500,y:0}
+	],{x:200,y:200,regX:100,regY:100})
 	var A3 = new CE.Area();
 	A3.shape = Polygon;
 	ces.addChild(A3)
