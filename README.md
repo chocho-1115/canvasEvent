@@ -28,7 +28,7 @@ ces.enabled('down','up','click')
 ``` javascript
 var ces = new CE.Stage(canvas,['out','over','move','down','up','click']);
 
-var rect = new CE.shape.Rect(150,150,100,100)
+var rect = new CE.shape.Rect(100,100,{x:150,y:150,regX:0,regY:0});//width，height，位置信息
 var A1 = new CE.Area(rect);
 
 ces.addChild(A1)
@@ -41,7 +41,7 @@ ces.addChild(A1)
 ``` javascript
 var ces = new CE.Stage(canvas,['out','over','move','down','up','click']);
 
-var arc = new CE.shape.Arc('arc',{x:300,y:300,radius:100,startAngle:0,endAngle:-90});
+var arc = new CE.shape.Arc(100,0,-90,{x:400,y:400,regX:100,regY:100}));//radius 开始角度 结束角度 位置信息
 var A1 = new CE.Area();
 A1.shape = arc;
 
@@ -56,21 +56,21 @@ ces.addChild(A1);
 ``` javascript
 var ces = new CE.Stage(canvas,['out','over','move','down','up','click']);
 
-var polygon = new CE.shape.Polygon('polygon',{points:[
-		{x:400,y:50},
-		{x:400,y:150},
-		{x:500,y:150},
+var Polygon = new CE.shape.Polygon([
+		{x:100,y:0},
+		{x:100,y:100},
+		{x:400,y:100},
 		
-		{x:500,y:110},
-		{x:480,y:140},
+		{x:400,y:60},
+		{x:380,y:90},
 		
-		{x:450,y:100},
+		{x:350,y:50},
 		
-		{x:480,y:60},
-		{x:500,y:90},
+		{x:380,y:10},
+		{x:400,y:40},
 		
-		{x:500,y:50}
-	]});
+		{x:500,y:0}
+	],{x:200,y:200,regX:100,regY:100});//定点坐标数组，位置信息
 var A1 = new CE.Area(polygon);
 
 
@@ -85,7 +85,7 @@ ces.addChild(A1);
 var ces = new CE.Stage(canvas,['out','over','move']);
 ces.enabled('down','up','click')
 
-var A1 = new CE.Area(new CE.shape.Rect(150,150,100,100));
+var A1 = new CE.Area(new CE.shape.Rect(100,100,{x:150,y:150,regX:0,regY:0}));
 ces.addChild(A1)
 A1.addEvent('down',function(e){
 	console.log(this);//这里的this指向了A1
