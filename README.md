@@ -70,7 +70,7 @@ var Polygon = new CE.shape.Polygon([
 		{x:400,y:40},
 		
 		{x:500,y:0}
-	],{x:200,y:200,regX:100,regY:100});//定点坐标数组，位置信息
+	],{x:200,y:200,regX:100,regY:100});//顶点坐标数组，位置信息
 var A1 = new CE.Area(polygon);
 
 
