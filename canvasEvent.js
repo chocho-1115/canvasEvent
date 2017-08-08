@@ -19,7 +19,7 @@
 		
 		this.deviceType = isTouch ? 'touch' : 'mouse';
 		this.canvas = canvas;
-		this.areas = [];
+		this.child = [];
 		this.childLength = 0;
 		this.regEvent = {
 			down : { status:false, name: 'mousedown'},
@@ -80,7 +80,7 @@
 							outPenetrate = true;
 						
 						for(var i=self.childLength-1;i>=0;i--){
-							var thisAreas = self.areas[i];
+							var thisAreas = self.child[i];
 							
 							var isIn = thisAreas.isInArea(offset.x,offset.y);
 							if(isIn){
@@ -129,7 +129,7 @@
 						var offset = self.getEventOffset(e);
 						//遍历所有事件区域
 						for(var i=self.childLength-1;i>=0;i--){
-							var thisAreas = self.areas[i];
+							var thisAreas = self.child[i];
 							//鼠标是否在形状内
 							var isIn = thisAreas.isInArea(offset.x,offset.y);
 							if(isIn){
@@ -171,23 +171,23 @@
 		addChild: function(){
 			var len = arguments.length;
 			for(var i=0;i<len;i++){
-				this.areas.push(arguments[i])
+				this.child.push(arguments[i])
 			}
-			this.childLength = this.areas.length;
+			this.childLength = this.child.length;
 		},
 		
 		removeChild:function(){
-			var areas = this.areas,
+			var areas = this.child,
 				len = arguments.length;
 				
 			for(var i=0;i<len;i++){
 				var index = this.getChildIndex(arguments[i]);
-				if(index!=-1)this.areas.splice(index,1);
+				if(index!=-1)this.child.splice(index,1);
 			}
-			this.childLength = this.areas.length;
+			this.childLength = this.child.length;
 		},
 		getChildIndex : function(child){
-			var areas = this.areas,
+			var areas = this.child,
 				len = areas.length;
 			for (var i = 0; i < len; i++) {
 				if (child === areas[i]) {
