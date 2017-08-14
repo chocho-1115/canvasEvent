@@ -138,9 +138,9 @@
 								var type = e.type.replace(/mouse|touch/g, "");
 								//画布是否有注册当前事件
 								if(self.regEvent[inEvent].status){
-									self.occur(thisAreas['on'+inEvent],e,thisAreas)
+									self.occur(thisAreas['on'+inEvent],e,thisAreas);
 								}
-								if(!thisAreas[inEvent+'Penetrate'])return false
+								if(!thisAreas[inEvent+'Penetrate'])return false;
 							}
 						}
 					}
@@ -273,7 +273,7 @@
 	}
 	CE.shape.Arc = function(radius,startAngle,endAngle,opt){
 		
-		var startD = this.startAngle<0?1:-1;
+		var startD = startAngle<0?1:-1;
 		var endD = endAngle<0?1:-1;
 		
 		this.x = opt.x||0;
@@ -281,9 +281,16 @@
 		this.regX = opt.regX||0;
 		this.regY = opt.regY||0;
 		this.radius = radius;
-		this.startAngle = startAngle+(Math.floor(Math.abs(startAngle)/360))*360*startD;
-		this.endAngle = endAngle+(Math.ceil(Math.abs(endAngle)/360))*360*endD;
 		
+		//转成 0-360的角度值
+		this.startAngle = startAngle+(Math.floor(Math.abs(startAngle)/360))*360*startD + 180*(startD+1);
+		this.endAngle = endAngle+(Math.floor(Math.abs(endAngle)/360))*360*endD + 180*(endD+1);
+		
+		if((startAngle!=endAngle)&&(this.startAngle==this.endAngle)){
+			this.startAngle = 0;
+			this.endAngle = 360;
+		}
+		//console.log(this.startAngle,this.endAngle)
 	}
  	CE.shape.Arc.prototype = {
 		constructor: CE.shape.Arc,
@@ -295,8 +302,10 @@
 				dy = y - pageY;
 			if(dx * dx + dy * dy > this.radius * this.radius)return false;
 			var thisA = 180/Math.PI*Math.atan(dy/dx);
-
-			if(pageX>=x&&pageY<=y){//第一象限
+			
+			//console.log(thisA)
+			
+			if(pageX>x&&pageY<=y){//第一象限 这里不能写成pageX>=x
 				thisA = 360+thisA
 			}else if(pageX<=x&&pageY<=y){//第二象限
 				thisA = 180+thisA
@@ -306,11 +315,22 @@
 				thisA = thisA
 			}
 			
-			if(thisA>=this.startAngle&&thisA<=this.endAngle){
-				return true
-			}else{
-				return false
-			}
+			if(thisA==360)thisA = 0;
+			//if(thisA<=0||thisA>=360)console.log(thisA)
+			
+			if(this.startAngle<this.endAngle){
+				if(thisA>=this.startAngle&&thisA<=this.endAngle){
+					return true
+				}else{
+					return false
+				}
+			}else if(this.startAngle>this.endAngle){
+				if((thisA>=this.startAngle&&thisA<=360) || (thisA>=0&&thisA<=this.endAngle)){
+					return true
+				}else{
+					return false
+				}
+			}else{return false}
 		}
 	}
 	
