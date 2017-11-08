@@ -9,6 +9,7 @@ body{background:#000;}
 canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;background:#222;}
 .text{color:#fff;}
 </style>
+
 <script type="text/javascript" src="canvasEvent.js"></script>
 </head>
 <body>
@@ -47,7 +48,6 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 		text.innerHTML += ' | click';
 	})
 	
-	
 	A1.addEvent('over',function(e){
 		text.innerHTML += ' | over';
 	})
@@ -55,7 +55,7 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 		text.innerHTML += ' | out';
 	})
 	A1.addEvent('move',function(e){
-		text.innerHTML += ' | move';
+		//text.innerHTML += ' | move';
 	})
 	
 	
@@ -94,7 +94,7 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	})
 	
 	
-	
+	//return false
 	///////////////////////
 	//ctx.fillStyle = 'rgba(125,125,125,1)';
 	ctx.beginPath();
@@ -127,7 +127,7 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 		{x:380,y:10},
 		{x:400,y:40},
 		
-		{x:500,y:0}
+		{x:400,y:0}
 	],{x:200,y:200,regX:100,regY:100})
 	var A3 = new CE.Area();
 	A3.shape = Polygon;
@@ -142,8 +142,8 @@ canvas{display:block;margin-left:100px;margin-top:100px;border:40px solid #999;b
 	})
 	
 	
-	//A3.setPenetrate('out',true)
-	//A3.setPenetrate('over',true)
+	A3.setPenetrate('out',true)
+	A3.setPenetrate('over',true)
 	//ces.removeChild(A1)
 
 	
