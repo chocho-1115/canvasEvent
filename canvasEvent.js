@@ -1,5 +1,7 @@
-// canvasEvent.js Javascript Library by hylink 杨燚平 2017-07-27 email:849890769@qq.com
-//https://github.com/chocho-1115
+/*! Javascript Library
+ *  杨燚平 email:849890769@qq.com 
+ *  https://github.com/chocho-1115/canvasEvent
+*/
 (function(window){
 	
 	window.canvasEvent = window.CE = {};
