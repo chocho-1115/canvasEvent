@@ -4,15 +4,15 @@
 
 [github canvasEvent.js](https://github.com/chocho-1115/canvasEvent/)
 
-一个给canvas内部添加事件相应区域的js库。支持鼠标响应与触屏响应，简单易用，无需重绘画布元素。
+一个给canvas内部添加事件响应区域的js库。支持鼠标响应与触屏响应，简单易用，无需重绘画布元素。
 
-**原理**：在canvas注册相应的事件，并给canvas内部添加几何响应区域。当交互发时，判断事件是否发生在几何响应区域。如果交互发生在几何响应区域时，响应该区域注册的事件。
+**原理**：在canvas注册响应的事件，并给canvas内部添加几何响应区域。当交互发时，判断事件是否发生在几何响应区域。如果交互发生在几何响应区域时，响应该区域注册的事件。
 
 ### 初始化事件
 ``` javascript
 var ces = new CE.Stage(canvas,['out','over','move','down','up','click']);
 ```
-支持'out','over','move','down','up','click'六种事件。 新建ces对象后，会根据初始化的事件类型和设备类型，给canvas添加相应的事件。如果是手机设备初始化down事件后，canvas会注册touchstart。pc端当然是mousedown事件。
+支持'out','over','move','down','up','click'六种事件。 新建ces对象后，会根据初始化的事件类型和设备类型，给canvas添加响应的事件。如果是手机设备初始化down事件后，canvas会注册touchstart。pc端当然是mousedown事件。
 
 你也可以通过enabled方法来初始化事件
 ``` javascript
